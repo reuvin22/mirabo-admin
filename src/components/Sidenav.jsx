@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Users, Settings, LogOut, Menu, X } from "lucide-react";
+import {
+  Home,
+  Users,
+  BarChart3,
+  FileUp,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
 
 function Sidenav() {
   const navigate = useNavigate();
@@ -11,6 +19,7 @@ function Sidenav() {
 
   return (
     <>
+      {/* Mobile Header */}
       <div className="bg-blue-900 text-white flex items-center justify-between px-5 py-3 md:hidden">
         <h1 className="text-xl font-semibold">じぶんLABO by Mirabo</h1>
         <button onClick={toggleMenu} className="cursor-pointer">
@@ -18,6 +27,7 @@ function Sidenav() {
         </button>
       </div>
 
+      {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full w-60 bg-blue-900 text-white flex flex-col justify-between shadow-lg transform transition-transform duration-300 z-40
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
@@ -33,7 +43,7 @@ function Sidenav() {
             <button
               className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
               onClick={() => {
-                navigate("/home");
+                navigate("/dashboard");
                 setIsOpen(false);
               }}
             >
@@ -44,23 +54,34 @@ function Sidenav() {
             <button
               className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
               onClick={() => {
-                navigate("/users");
+                navigate("/management");
                 setIsOpen(false);
               }}
             >
               <Users size={20} />
-              <span>User List</span>
+              <span>User Management</span>
             </button>
 
             <button
               className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
               onClick={() => {
-                navigate("/settings");
+                navigate("/total-info");
                 setIsOpen(false);
               }}
             >
-              <Settings size={20} />
-              <span>Settings</span>
+              <BarChart3 size={20} />
+              <span>Total Info</span>
+            </button>
+
+            <button
+              className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
+              onClick={() => {
+                navigate("/csv-upload");
+                setIsOpen(false);
+              }}
+            >
+              <FileUp size={20} />
+              <span>CSV Upload</span>
             </button>
           </nav>
         </div>
