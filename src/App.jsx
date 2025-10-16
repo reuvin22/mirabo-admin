@@ -13,7 +13,7 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        {/* <Route path="/profile" element={<Profil />} /> */}
+        <Route path="/profile" element={<Users />} />
         <Route path="/management" element={<UserManagement />} />
         <Route path="/total-info" element={<TotalInfo />} />
         <Route path="/csv-upload" element={<CsvUpload />} />

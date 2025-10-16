@@ -8,6 +8,7 @@ import {
   LogOut,
   Menu,
   X,
+  User
 } from "lucide-react";
 
 function Sidenav() {
@@ -19,17 +20,15 @@ function Sidenav() {
 
   return (
     <>
-      {/* Mobile Header */}
-      <div className="bg-blue-900 text-white flex items-center justify-between px-5 py-3 md:hidden">
+      <div className="bg-gray-800 text-white flex items-center justify-between px-5 py-3 md:hidden">
         <h1 className="text-xl font-semibold">じぶんLABO by Mirabo</h1>
         <button onClick={toggleMenu} className="cursor-pointer">
           {isOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
       </div>
 
-      {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-60 bg-blue-900 text-white flex flex-col justify-between shadow-lg transform transition-transform duration-300 z-40
+        className={`fixed top-0 left-0 h-full w-60 bg-gray-800 text-white flex flex-col justify-between shadow-lg transform transition-transform duration-300 z-40
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         <div>
@@ -41,7 +40,7 @@ function Sidenav() {
 
           <nav className="mt-4 flex flex-col space-y-1">
             <button
-              className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-5 py-2 hover:bg-gray-700 transition-colors cursor-pointer"
               onClick={() => {
                 navigate("/dashboard");
                 setIsOpen(false);
@@ -52,7 +51,18 @@ function Sidenav() {
             </button>
 
             <button
-              className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-5 py-2 hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => {
+                navigate("/profile");
+                setIsOpen(false);
+              }}
+            >
+              <User size={20} />
+              <span>Profile</span>
+            </button>
+
+            <button
+              className="flex items-center gap-3 px-5 py-2 hover:bg-gray-700 transition-colors cursor-pointer"
               onClick={() => {
                 navigate("/management");
                 setIsOpen(false);
@@ -63,7 +73,7 @@ function Sidenav() {
             </button>
 
             <button
-              className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-5 py-2 hover:bg-gray-700 transition-colors cursor-pointer"
               onClick={() => {
                 navigate("/total-info");
                 setIsOpen(false);
@@ -74,7 +84,7 @@ function Sidenav() {
             </button>
 
             <button
-              className="flex items-center gap-3 px-5 py-2 hover:bg-blue-700 transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-5 py-2 hover:bg-gray-700 transition-colors cursor-pointer"
               onClick={() => {
                 navigate("/csv-upload");
                 setIsOpen(false);
@@ -88,7 +98,7 @@ function Sidenav() {
 
         <div className="p-5 border-t border-blue-700">
           <button
-            className="flex items-center gap-3 w-full px-3 py-2 hover:bg-blue-700 transition-colors text-left cursor-pointer"
+            className="flex items-center gap-3 w-full px-3 py-2 hover:bg-gray-700 transition-colors text-left cursor-pointer"
             onClick={handleLogout}
           >
             <LogOut size={20} />
