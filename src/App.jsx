@@ -11,6 +11,7 @@ import TotalInfo from "./pages/TotalInfo";
 import CsvUpload from "./pages/CsvUpload";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import ForgotPassword from "./pages/ForgotPassword";
+import PublicRoutes from "./components/PublicRoutes";
 
 function App() {
   return (
@@ -18,8 +19,11 @@ function App() {
       <ToastContainer position="top-right" autoClose={2000} />
 
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route element={<PublicRoutes />}>
+          <Route path="/" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Route>
+
         <Route element={<ProtectedRoutes />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
