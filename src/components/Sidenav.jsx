@@ -11,13 +11,22 @@ import {
   User
 } from "lucide-react";
 
+import { useDispatch } from "react-redux";
+import { logout } from "../utils/reducers/authSlice"
+
 function Sidenav() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = () => navigate("/");
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  const dispatch = useDispatch()
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+  
   return (
     <>
       <div className="bg-gray-800 text-white flex items-center justify-between px-5 py-3 md:hidden">

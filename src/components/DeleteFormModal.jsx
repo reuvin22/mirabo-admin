@@ -6,13 +6,15 @@ import {
   DialogActions,
   Button,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 
-function DeleteFormModal({ open, onClose, onConfirm, itemName = "this item" }) {
+function DeleteFormModal({ open, onClose, onConfirm, itemName = "this item", loading = false }) {
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={loading ? () => {} : onClose}
+      disableEscapeKeyDown={loading}
       fullWidth
       maxWidth="xs"
       PaperProps={{ sx: { textAlign: "center" } }}
@@ -20,20 +22,22 @@ function DeleteFormModal({ open, onClose, onConfirm, itemName = "this item" }) {
       <DialogTitle>Confirm Delete</DialogTitle>
       <DialogContent>
         <Typography>
-          Are you sure you want to delete this?
+          Are you sure you want to delete {itemName}?
         </Typography>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
-        <Button variant="outlined" onClick={onClose}>
+        <Button variant="outlined" onClick={onClose} disabled={loading}>
           Cancel
         </Button>
+
         <Button
           variant="contained"
           color="error"
           onClick={onConfirm}
-          sx={{ ml: 1 }}
+          disabled={loading}
+          sx={{ ml: 1, minWidth: 90 }}
         >
-          Delete
+          {loading ? <CircularProgress size={20} /> : "Delete"}
         </Button>
       </DialogActions>
     </Dialog>

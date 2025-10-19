@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,39 +11,103 @@ import {
   TextField,
   IconButton,
   Tooltip,
+  CircularProgress,
+  Box,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import UserFormModal from "../components/UserFormModal";
-
+import { useCreateUserManagementMutation, useDeleteUserManagementMutation, useUpdateUserManagementMutation, useUserManagementQuery } from "../services/userManagementService";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DeleteIcon from "@mui/icons-material/Delete";
+import UserManagementModal from "../components/UserManagementModal";
+import DeleteFormModal from "../components/DeleteFormModal";
+import { toast } from "react-toastify";
+import { EditIcon } from "lucide-react";
 function UserManagement() {
-  const dummyUsers = [
-    { id: 1, name: "John Doe", email: "john@example.com", role: "Admin" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User" },
-    { id: 3, name: "Mike Johnson", email: "mike@example.com", role: "User" },
-    { id: 4, name: "Sarah Lee", email: "sarah@example.com", role: "Manager" },
-    { id: 5, name: "Robert Brown", email: "robert@example.com", role: "User" },
-  ];
-
-  const [users, setUsers] = useState(dummyUsers);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openForm, setOpenForm] = useState(false);
+  const [openViewModal, setOpenViewModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase()) ||
-      user.role.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setIsEditing(true);
+    setOpenForm(true);
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedSearch(search), 500);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  const { data, isLoading } = useUserManagementQuery({
+    search: debouncedSearch,
+    page: page + 1,
+    limit: rowsPerPage,
+  });
+  const [deleteUser] = useDeleteUserManagementMutation();
+  const [createUser] = useCreateUserManagementMutation();
+  const [updateUser] = useUpdateUserManagementMutation();
+
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedSearch]);
+
+    const handleView = (user) => {
+    setSelectedUser(user);
+    setOpenViewModal(true);
+  };
+
+  const handleCloseView = () => {
+    setSelectedUser(null);
+    setOpenViewModal(false);
+  };
+
+  const handleDelete = (user) => {
+    setSelectedUser(user);
+    setOpenDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedUser) return;
+
+    setDeleteLoading(true);
+    try {
+      await deleteUser(selectedUser.id).unwrap();
+      toast.success("User deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete user");
+    } finally {
+      setDeleteLoading(false);
+      setOpenDeleteModal(false);
+      setSelectedUser(null);
+    }
+  };
 
   const handleCreateUser = () => setOpenForm(true);
   const handleCloseForm = () => setOpenForm(false);
 
-  const handleAddUser = (newUser) => {
-    const nextId = users.length ? Math.max(...users.map((u) => u.id)) + 1 : 1;
-    setUsers([...users, { id: nextId, ...newUser }]);
-    setOpenForm(false);
+  const handleSubmit = async (formData) => {
+    try {
+      if (isEditing) {
+        await updateUser({ id: selectedUser.id, body: formData }).unwrap();
+        toast.success("User updated successfully");
+      } else {
+        await createUser(formData).unwrap();
+        toast.success("User created successfully");
+      }
+      setOpenForm(false);
+      setIsEditing(false);
+      setSelectedUser(null);
+    } catch (error) {
+      toast.error(isEditing ? "Failed to update user" : "Failed to create user");
+    }
   };
 
   return (
@@ -78,56 +142,67 @@ function UserManagement() {
         </Tooltip>
       </div>
 
-      <Paper
-        className="flex-1 overflow-hidden"
-        sx={{
-          minHeight: "calc(100vh - 200px)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <TableContainer
-          sx={{
-            flex: 1,
-            overflowX: "auto",
-            overflowY: "auto",
-            maxHeight: "70vh",
-          }}
-        >
+      <Paper sx={{ flex: 1, display: "flex", flexDirection: "column", minHeight: "calc(100vh - 200px)" }}>
+        <TableContainer sx={{ flex: 1, maxHeight: "70vh" }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell><b>ID</b></TableCell>
-                <TableCell><b>Name</b></TableCell>
-                <TableCell><b>Email</b></TableCell>
-                <TableCell><b>Role</b></TableCell>
+                <TableCell align="center"><b>Name</b></TableCell>
+                <TableCell align="center"><b>Email</b></TableCell>
+                <TableCell align="center"><b>Role</b></TableCell>
+                <TableCell align="center"><b>Actions</b></TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
-              {filteredUsers
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((user) => (
-                  <TableRow key={user.id} hover>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                  </TableRow>
-                ))}
-              {filteredUsers.length === 0 && (
+              {isLoading && (
                 <TableRow>
                   <TableCell colSpan={4} align="center">
-                    No results found
+                    <CircularProgress />
                   </TableCell>
                 </TableRow>
               )}
+
+              {!isLoading && data?.data?.length > 0 && data.data.map((user) => (
+                <TableRow key={user.id} hover>
+                  <TableCell align="center">{user.first_name} {user.last_name}</TableCell>
+                  <TableCell align="center">{user.email}</TableCell>
+                  <TableCell align="center">{user.role}</TableCell>
+                  <TableCell align="center">
+                    <Tooltip title="View">
+                      <IconButton size="small" color="primary" onClick={() => handleView(user)}>
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Edit">
+                      <IconButton size="small" color="secondary" onClick={() => handleEdit(user)}>
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Delete">
+                      <IconButton size="small" color="error" onClick={() => handleDelete(user)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+
+              {!isLoading && (!data?.data || data.data.length === 0) && (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">No results found</TableCell>
+                </TableRow>
+              )}
             </TableBody>
+
           </Table>
         </TableContainer>
 
         <TablePagination
           component="div"
-          count={filteredUsers.length}
+          count={data?.total ?? 0}
           page={page}
           onPageChange={(e, newPage) => setPage(newPage)}
           rowsPerPage={rowsPerPage}
@@ -141,8 +216,26 @@ function UserManagement() {
 
       <UserFormModal
         open={openForm}
-        onClose={handleCloseForm}
-        onSubmit={handleAddUser}
+        onClose={() => {
+          setOpenForm(false);
+          setIsEditing(false);
+          setSelectedUser(null);
+        }}
+        onSubmit={handleSubmit}
+        initialData={isEditing ? selectedUser : null}
+      />
+
+      <UserManagementModal
+        open={openViewModal}
+        onClose={handleCloseView}
+        user={selectedUser}
+      />
+      <DeleteFormModal
+        open={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
+        itemName={selectedUser?.first_name + " " + selectedUser?.last_name}
+        loading={deleteLoading}
       />
     </div>
   );

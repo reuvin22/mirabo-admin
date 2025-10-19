@@ -32,7 +32,6 @@ export const userLogin = createAsyncThunk(
 export const userGrants = createAsyncThunk(
   'auth/userModules',
   async (moduleId, { getState, rejectWithValue }) => {
-    // console.log(moduleId)
     try {
       const token = getState().auth.userToken;
       const config = {

@@ -28,7 +28,6 @@ const authSlice = createSlice({
       state.userToken = null;
       state.error = null;
       state.isLoggedIn = false;
-      // 🚫 No Router.push here
     },
     setCredentials: (state, { payload }) => {
       state.userInfo = payload;

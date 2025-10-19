@@ -1,184 +1,229 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
   Paper,
-  Avatar,
   Divider,
   Grid,
   Button,
   TextField,
+  CircularProgress,
 } from "@mui/material";
+import { useProfileQuery, useUpdateAuthUserMutation } from "../services/profileService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Users() {
   const [isEditing, setIsEditing] = useState(false);
+  const { data: profile, isLoading } = useProfileQuery();
+  const [updateAuthUser, { isLoading: isUpdating }] = useUpdateAuthUserMutation();
 
   const [userData, setUserData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone: "+44 123 456 789",
-    country: "Japan",
-    city: "Tokyo",
-    region: "",
-    postalCode: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
+    password: "",
+    confirmPassword: "",
   });
 
-  const handleChange = (field, value) => {
-    setUserData({ ...userData, [field]: value });
+  useEffect(() => {
+    if (profile?.user) {
+      setUserData({
+        firstName: profile.user.first_name,
+        lastName: profile.user.last_name,
+        email: profile.user.email,
+        role: profile.user.role,
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [profile]);
+
+  const handleChange = (key, value) => {
+    setUserData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
+  const handleSave = async () => {
+    if (userData.password || userData.confirmPassword) {
+      if (userData.password !== userData.confirmPassword) {
+        toast.error("Passwords do not match!");
+        return;
+      }
+    }
+
+    try {
+      const body = {
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        email: userData.email,
+      };
+
+      if (userData.password) {
+        body.password = userData.password;
+      }
+
+      await updateAuthUser({
+        id: profile.user.id,
+        body,
+      }).unwrap();
+
+      toast.success("Profile updated successfully!");
+      setIsEditing(false);
+      setUserData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update profile.");
+    }
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert("✅ User information updated successfully!");
-  };
+  if (isLoading)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "60vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#f5f6fa",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        p: { xs: 2, md: 6 },
-      }}
-    >
-      <Box sx={{ width: "100%", maxWidth: 1000 }}>
-        <Paper
-          elevation={2}
-          sx={{
-            p: 3,
-            display: "flex",
-            alignItems: "center",
-            borderRadius: 3,
-            mb: 4,
-          }}
-        >
-          <Avatar
-            src="https://randomuser.me/api/portraits/men/75.jpg"
-            alt="User Avatar"
-            sx={{ width: 80, height: 80, mr: 3 }}
-          />
-          <Box>
-            <Typography variant="h5" fontWeight="bold">
-              {userData.firstName} {userData.lastName}
-            </Typography>
-            <Typography color="text.secondary">{userData.email}</Typography>
-            <Typography color="text.secondary">Admin</Typography>
-            <Typography color="text.secondary">
-              📍 {[userData.city, userData.country, userData.region, userData.postalCode]
-                .filter(Boolean)
-                .join(", ")}
-            </Typography>
-          </Box>
-        </Paper>
-
-        <Paper elevation={2} sx={{ p: 4, borderRadius: 3, backgroundColor: "#fff" }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              Personal Information
-            </Typography>
-            {!isEditing ? (
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  textTransform: "none",
-                  borderRadius: 2,
-                  backgroundColor: "#00796b",
-                  "&:hover": { backgroundColor: "#00695c" },
-                }}
-                onClick={handleEditToggle}
-              >
-                Edit
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                color="success"
-                size="small"
-                sx={{
-                  textTransform: "none",
-                  borderRadius: 2,
-                }}
-                onClick={handleSave}
-              >
-                Save
-              </Button>
-            )}
-          </Box>
-
-          <Divider sx={{ mb: 3 }} />
-
-          <Grid container spacing={3}>
-            {[
-              { label: "First Name", key: "firstName" },
-              { label: "Last Name", key: "lastName" },
-              { label: "Email", key: "email" },
-              { label: "Phone", key: "phone" },
-            ].map((field) => (
-              <Grid item xs={12} sm={6} md={3} key={field.key}>
-                <Typography color="text.secondary">{field.label}</Typography>
-                {isEditing ? (
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    value={userData[field.key]}
-                    onChange={(e) => handleChange(field.key, e.target.value)}
-                  />
-                ) : (
-                  <Typography variant="subtitle1" fontWeight={500}>
-                    {userData[field.key]}
-                  </Typography>
-                )}
-              </Grid>
-            ))}
-          </Grid>
-
-          <Divider sx={{ my: 3 }} />
-
-          <Typography variant="h6" fontWeight="bold" mb={2}>
-            Address
+    <Box sx={{ p: 4 }}>
+      <Paper sx={{ p: 3, mb: 4, display: "flex", alignItems: "center" }}>
+        <Box>
+          <Typography variant="h5" fontWeight="bold">
+            {userData.firstName} {userData.lastName}
           </Typography>
+          <Typography>{userData.email}</Typography>
+          <Typography>{userData.role}</Typography>
 
-          <Grid container spacing={3}>
-            {[
-              { label: "Country", key: "country" },
-              { label: "City", key: "city" },
-              { label: "Region", key: "region" },
-              { label: "Postal Code", key: "postalCode" },
-            ].map((field) => (
-              <Grid item xs={12} sm={6} md={3} key={field.key}>
-                <Typography color="text.secondary">{field.label}</Typography>
-                {isEditing ? (
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    value={userData[field.key]}
-                    onChange={(e) => handleChange(field.key, e.target.value)}
-                  />
-                ) : (
-                  <Typography variant="subtitle1" fontWeight={500}>
-                    {userData[field.key]}
-                  </Typography>
-                )}
-              </Grid>
-            ))}
+          {/* <Typography>📍 Tokyo, Japan</Typography>  <-- COMMENTED ADDRESS */}
+          {/* <Typography>+44 123 456 789</Typography> <-- COMMENTED PHONE */}
+        </Box>
+      </Paper>
+
+      <Paper sx={{ p: 3 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6" fontWeight="bold">
+            Personal Information
+          </Typography>
+          {!isEditing ? (
+            <Button variant="contained" size="small" onClick={() => setIsEditing(true)}>
+              Edit
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="success"
+              size="small"
+              onClick={handleSave}
+              disabled={isUpdating}
+            >
+              Save
+            </Button>
+          )}
+        </Box>
+
+        <Divider sx={{ mb: 2, mt: 2 }} />
+
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Typography>First Name</Typography>
+            {isEditing ? (
+              <TextField
+                size="small"
+                fullWidth
+                value={userData.firstName}
+                onChange={(e) => handleChange("firstName", e.target.value)}
+              />
+            ) : (
+              <Typography fontWeight={500}>{userData.firstName}</Typography>
+            )}
           </Grid>
-        </Paper>
-      </Box>
+
+          <Grid item xs={12} sm={6}>
+            <Typography>Last Name</Typography>
+            {isEditing ? (
+              <TextField
+                size="small"
+                fullWidth
+                value={userData.lastName}
+                onChange={(e) => handleChange("lastName", e.target.value)}
+              />
+            ) : (
+              <Typography fontWeight={500}>{userData.lastName}</Typography>
+            )}
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Typography>Email</Typography>
+            {isEditing ? (
+              <TextField
+                size="small"
+                fullWidth
+                value={userData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
+            ) : (
+              <Typography fontWeight={500}>{userData.email}</Typography>
+            )}
+          </Grid>
+
+          {isEditing && (
+            <>
+              <Grid item xs={12} sm={6}>
+                <Typography>Password</Typography>
+                <TextField
+                  size="small"
+                  fullWidth
+                  type="password"
+                  value={userData.password}
+                  onChange={(e) => handleChange("password", e.target.value)}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Typography>Confirm Password</Typography>
+                <TextField
+                  size="small"
+                  fullWidth
+                  type="password"
+                  value={userData.confirmPassword}
+                  onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                />
+              </Grid>
+            </>
+          )}
+
+          {/* <Grid item xs={12} sm={6}>
+              <Typography>Phone</Typography>
+              <Typography fontWeight={500}>+44...</Typography>
+          </Grid> */}
+        </Grid>
+
+        {/* <Divider sx={{ my: 3 }} />
+
+        <Typography variant="h6" fontWeight="bold" mb={2}>
+          Address
+        </Typography> */}
+
+        {/* <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Typography>Country</Typography>
+              <Typography fontWeight={500}>Japan</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>City</Typography>
+              <Typography fontWeight={500}>Tokyo</Typography>
+            </Grid>
+        </Grid> */}
+      </Paper>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </Box>
   );
 }
