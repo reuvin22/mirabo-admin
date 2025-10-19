@@ -21,6 +21,7 @@ function Users() {
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
+    middle_name: "",
     email: "",
     role: "",
     password: "",
@@ -32,6 +33,7 @@ function Users() {
       setUserData({
         firstName: profile.user.first_name,
         lastName: profile.user.last_name,
+        middle_name: profile.user.middle_name,
         email: profile.user.email,
         role: profile.user.role,
         password: "",
@@ -55,6 +57,7 @@ function Users() {
     try {
       const body = {
         first_name: userData.firstName,
+        middle_name: userData.middle_name,
         last_name: userData.lastName,
         email: userData.email,
       };
@@ -96,7 +99,7 @@ function Users() {
       <Paper sx={{ p: 3, mb: 4, display: "flex", alignItems: "center" }}>
         <Box>
           <Typography variant="h5" fontWeight="bold">
-            {userData.firstName} {userData.lastName}
+            {userData.firstName} {userData.middle_name || ''} {userData.lastName}
           </Typography>
           <Typography>{userData.email}</Typography>
           <Typography>{userData.role}</Typography>
@@ -142,6 +145,20 @@ function Users() {
               />
             ) : (
               <Typography fontWeight={500}>{userData.firstName}</Typography>
+            )}
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Typography>姓</Typography>
+            {isEditing ? (
+              <TextField
+                size="small"
+                fullWidth
+                value={userData.middle_name}
+                onChange={(e) => handleChange("middle_name", e.target.value)}
+              />
+            ) : (
+              <Typography fontWeight={500}>{userData.middle_name}</Typography>
             )}
           </Grid>
 

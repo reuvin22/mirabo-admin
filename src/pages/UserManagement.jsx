@@ -14,55 +14,61 @@ import {
   CircularProgress,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { EditIcon } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import UserFormModal from "../components/UserFormModal";
+import UserManagementModal from "../components/UserManagementModal";
+import DeleteFormModal from "../components/DeleteFormModal";
+
 import {
   useCreateUserManagementMutation,
   useDeleteUserManagementMutation,
   useUpdateUserManagementMutation,
   useUserManagementQuery,
 } from "../services/userManagementService";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import DeleteIcon from "@mui/icons-material/Delete";
-import UserManagementModal from "../components/UserManagementModal";
-import DeleteFormModal from "../components/DeleteFormModal";
-import { toast } from "react-toastify";
-import { EditIcon } from "lucide-react";
 
 function UserManagement() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const [openForm, setOpenForm] = useState(false);
   const [openViewModal, setOpenViewModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
-  const handleEdit = (user) => {
-    setSelectedUser(user);
-    setIsEditing(true);
-    setOpenForm(true);
-  };
-
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(search), 500);
-    return () => clearTimeout(handler);
-  }, [search]);
 
   const { data, isLoading } = useUserManagementQuery({
     search: debouncedSearch,
     page: page + 1,
     limit: rowsPerPage,
   });
+
   const [deleteUser] = useDeleteUserManagementMutation();
   const [createUser] = useCreateUserManagementMutation();
   const [updateUser] = useUpdateUserManagementMutation();
 
+  // Debounce search
   useEffect(() => {
-    setPage(0);
-  }, [debouncedSearch]);
+    const handler = setTimeout(() => setDebouncedSearch(search), 500);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  useEffect(() => setPage(0), [debouncedSearch]);
+
+  // Open modals
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setIsEditing(true);
+    setOpenForm(true);
+  };
 
   const handleView = (user) => {
     setSelectedUser(user);
@@ -81,12 +87,12 @@ function UserManagement() {
 
   const handleConfirmDelete = async () => {
     if (!selectedUser) return;
-
     setDeleteLoading(true);
+
     try {
       await deleteUser(selectedUser.id).unwrap();
       toast.success("ユーザーが正常に削除されました");
-    } catch (error) {
+    } catch {
       toast.error("ユーザーの削除に失敗しました");
     } finally {
       setDeleteLoading(false);
@@ -96,7 +102,11 @@ function UserManagement() {
   };
 
   const handleCreateUser = () => setOpenForm(true);
-  const handleCloseForm = () => setOpenForm(false);
+  const handleCloseForm = () => {
+    setOpenForm(false);
+    setIsEditing(false);
+    setSelectedUser(null);
+  };
 
   const handleSubmit = async (formData) => {
     try {
@@ -107,16 +117,15 @@ function UserManagement() {
         await createUser(formData).unwrap();
         toast.success("ユーザーが正常に作成されました");
       }
-      setOpenForm(false);
-      setIsEditing(false);
-      setSelectedUser(null);
-    } catch (error) {
+      handleCloseForm();
+    } catch {
       toast.error(isEditing ? "ユーザーの更新に失敗しました" : "ユーザーの作成に失敗しました");
     }
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 p-4 md:p-8">
+      <ToastContainer position="top-right" autoClose={2000} />
       <h1 className="text-2xl font-semibold mb-4">ユーザー管理</h1>
 
       <div className="mb-4 flex items-center justify-between">
@@ -168,40 +177,39 @@ function UserManagement() {
                 </TableRow>
               )}
 
-              {!isLoading && data?.data?.length > 0 && data.data.map((user) => (
-                <TableRow key={user.id} hover>
-                  <TableCell align="center">{user.first_name} {user.last_name}</TableCell>
-                  <TableCell align="center">{user.email}</TableCell>
-                  <TableCell align="center">{user.role}</TableCell>
-                  <TableCell align="center">
-                    <Tooltip title="表示">
-                      <IconButton size="small" color="primary" onClick={() => handleView(user)}>
-                        <VisibilityIcon />
-                      </IconButton>
-                    </Tooltip>
+              {!isLoading && data?.data?.length > 0
+                ? data.data.map((user) => (
+                    <TableRow key={user.id} hover>
+                      <TableCell align="center">{user.first_name || ""} {user.last_name || ""}</TableCell>
+                      <TableCell align="center">{user.email || ""}</TableCell>
+                      <TableCell align="center">{user.role || ""}</TableCell>
+                      <TableCell align="center">
+                        <Tooltip title="表示">
+                          <IconButton size="small" color="primary" onClick={() => handleView(user)}>
+                            <VisibilityIcon />
+                          </IconButton>
+                        </Tooltip>
 
-                    <Tooltip title="編集">
-                      <IconButton size="small" color="secondary" onClick={() => handleEdit(user)}>
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
+                        <Tooltip title="編集">
+                          <IconButton size="small" color="secondary" onClick={() => handleEdit(user)}>
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
 
-                    <Tooltip title="削除">
-                      <IconButton size="small" color="error" onClick={() => handleDelete(user)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
-
-              {!isLoading && (!data?.data || data.data.length === 0) && (
-                <TableRow>
-                  <TableCell colSpan={4} align="center">結果が見つかりません</TableCell>
-                </TableRow>
-              )}
+                        <Tooltip title="削除">
+                          <IconButton size="small" color="error" onClick={() => handleDelete(user)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : !isLoading && (
+                    <TableRow>
+                      <TableCell colSpan={4} align="center">結果が見つかりません</TableCell>
+                    </TableRow>
+                  )}
             </TableBody>
-
           </Table>
         </TableContainer>
 
@@ -221,11 +229,7 @@ function UserManagement() {
 
       <UserFormModal
         open={openForm}
-        onClose={() => {
-          setOpenForm(false);
-          setIsEditing(false);
-          setSelectedUser(null);
-        }}
+        onClose={handleCloseForm}
         onSubmit={handleSubmit}
         initialData={isEditing ? selectedUser : null}
       />
@@ -240,7 +244,7 @@ function UserManagement() {
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
         onConfirm={handleConfirmDelete}
-        itemName={selectedUser?.first_name + " " + selectedUser?.last_name}
+        itemName={`${selectedUser?.first_name || ""} ${selectedUser?.last_name || ""}`}
         loading={deleteLoading}
       />
     </div>
