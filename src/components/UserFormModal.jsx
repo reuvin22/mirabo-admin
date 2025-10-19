@@ -56,25 +56,23 @@ function UserFormModal({ open, onClose, onSubmit, initialData }) {
 
   const handleSubmit = async () => {
     if (!formData.first_name || !formData.last_name || !formData.email) {
-      toast.error("Please fill in all required fields.");
+      toast.error("必須項目をすべて入力してください。");
       return;
     }
 
-    // Password required only if creating
     if (!isEditing && !formData.password) {
-      toast.error("Password is required.");
+      toast.error("パスワードは必須です。");
       return;
     }
 
     if (formData.password !== formData.confirm_password) {
-      toast.error("Passwords do not match.");
+      toast.error("パスワードが一致しません。");
       return;
     }
 
     const payload = { ...formData };
     delete payload.confirm_password;
 
-    // If editing and password is empty — remove it
     if (isEditing && payload.password === "") {
       delete payload.password;
     }
@@ -86,32 +84,85 @@ function UserFormModal({ open, onClose, onSubmit, initialData }) {
 
   return (
     <Dialog open={open} onClose={loading ? null : onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{isEditing ? "Edit User" : "Create New User"}</DialogTitle>
+      <DialogTitle>{isEditing ? "ユーザー編集" : "新規ユーザー作成"}</DialogTitle>
 
       <DialogContent dividers>
-        <TextField margin="normal" fullWidth label="First Name" name="first_name" value={formData.first_name} onChange={handleChange} />
-        <TextField margin="normal" fullWidth label="Middle Name" name="middle_name" value={formData.middle_name} onChange={handleChange} />
-        <TextField margin="normal" fullWidth label="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} />
-        <TextField margin="normal" fullWidth label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="名"
+          name="first_name"
+          value={formData.first_name}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="ミドルネーム"
+          name="middle_name"
+          value={formData.middle_name}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="姓"
+          name="last_name"
+          value={formData.last_name}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="メールアドレス"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
 
-        <TextField margin="normal" fullWidth label="Password" name="password" type="password" value={formData.password} onChange={handleChange} />
-        <TextField margin="normal" fullWidth label="Confirm Password" name="confirm_password" type="password" value={formData.confirm_password} onChange={handleChange} />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="パスワード"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="パスワード確認"
+          name="confirm_password"
+          type="password"
+          value={formData.confirm_password}
+          onChange={handleChange}
+        />
 
-        <TextField select margin="normal" fullWidth label="Role" name="role" value={formData.role} onChange={handleChange}>
-          <MenuItem value="Admin">Admin</MenuItem>
-          <MenuItem value="User">User</MenuItem>
+        <TextField
+          select
+          margin="normal"
+          fullWidth
+          label="役割"
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+        >
+          <MenuItem value="Admin">管理者</MenuItem>
+          <MenuItem value="User">ユーザー</MenuItem>
         </TextField>
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} disabled={loading}>Cancel</Button>
+        <Button onClick={onClose} disabled={loading}>キャンセル</Button>
         <Button
           variant="contained"
           disabled={loading}
           onClick={handleSubmit}
           sx={{ backgroundColor: "#00796b", "&:hover": { backgroundColor: "#00695c" } }}
         >
-          {loading ? <CircularProgress size={22} /> : isEditing ? "Update User" : "Save User"}
+          {loading ? <CircularProgress size={22} /> : isEditing ? "ユーザー更新" : "ユーザー保存"}
         </Button>
       </DialogActions>
     </Dialog>

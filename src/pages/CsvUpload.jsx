@@ -17,22 +17,22 @@ import {
 } from "@mui/material";
 import { CloudUpload, Delete } from "@mui/icons-material";
 import { useUploadCsvMutation } from "../services/uploadService";
-import SampleFileImage from "../assets/Sample-Format.png"; // <-- make sure the extension is correct
+import SampleFileImage from "../assets/Sample-Format.png";
 import { toast } from "react-toastify";
 
 // Modal Component
 const NeedHelpModal = ({ open, onClose }) => (
   <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-    <DialogTitle>Need Help?</DialogTitle>
+    <DialogTitle>ヘルプが必要ですか？</DialogTitle>
     <DialogContent dividers>
       <Typography variant="body1" color="text.secondary" mb={2}>
-        Here is a sample format of the document you need to upload. Make sure your Excel/CSV file follows the same column headings and structure.
+        ここにアップロードする必要があるドキュメントのサンプル形式があります。Excel/CSVファイルが同じ列見出しと構造になっていることを確認してください。
       </Typography>
 
       <Box
         component="img"
         src={SampleFileImage}
-        alt="Sample file format"
+        alt="サンプルファイル形式"
         sx={{
           maxWidth: "100%",
           height: "auto",
@@ -43,11 +43,11 @@ const NeedHelpModal = ({ open, onClose }) => (
       />
 
       <Typography variant="body2" color="text.secondary" mt={2}>
-        Columns must include: <strong>question_number, questions, writing_advice, prompt</strong>
+        列には以下を含める必要があります: <strong>question_number, questions, writing_advice, prompt</strong>
       </Typography>
     </DialogContent>
     <DialogActions>
-      <Button onClick={onClose} variant="contained">Close</Button>
+      <Button onClick={onClose} variant="contained">閉じる</Button>
     </DialogActions>
   </Dialog>
 );
@@ -65,7 +65,7 @@ function CsvUpload() {
     const validFiles = uploadedFiles.filter(validateFile);
 
     if (validFiles.length !== uploadedFiles.length) {
-      alert("Only CSV or Excel files are allowed!");
+      alert("CSVまたはExcelファイルのみ許可されています！");
     }
 
     setFiles((prev) => [...prev, ...validFiles]);
@@ -81,7 +81,7 @@ function CsvUpload() {
     const validFiles = uploadedFiles.filter(validateFile);
 
     if (validFiles.length !== uploadedFiles.length) {
-      toast.error("Only CSV or Excel files are allowed!");
+      toast.error("CSVまたはExcelファイルのみ許可されています！");
     }
 
     setFiles((prev) => [...prev, ...validFiles]);
@@ -90,16 +90,16 @@ function CsvUpload() {
   const handleRemoveFile = (index) => setFiles((prev) => prev.filter((_, i) => i !== index));
 
   const handleUpload = async () => {
-    if (!files.length) return toast.error("Please select at least one file first!");
+    if (!files.length) return toast.error("まず少なくとも1つのファイルを選択してください！");
     try {
       for (let file of files) {
         await uploadCsv(file).unwrap();
       }
-      toast.success(`Uploaded files successfully`);
+      toast.success(`ファイルを正常にアップロードしました`);
       setFiles([]);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to upload files");
+      toast.error("ファイルのアップロードに失敗しました");
     }
   };
 
@@ -107,7 +107,7 @@ function CsvUpload() {
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f7fafc", p: { xs: 2, md: 6 } }}>
       <Paper elevation={3} sx={{ borderRadius: 2, p: 4, maxWidth: 900, mx: "auto", backgroundColor: "white" }}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-          <Typography variant="h6" fontWeight="bold">Upload CSV / Excel</Typography>
+          <Typography variant="h6" fontWeight="bold">CSV / Excelアップロード</Typography>
         </Box>
 
         <Divider sx={{ mb: 3 }} />
@@ -136,7 +136,7 @@ function CsvUpload() {
           />
           <CloudUpload sx={{ fontSize: 50, color: "#00796b" }} />
           <Typography variant="body1" mt={2} color="text.secondary">
-            Drop CSV or Excel files here <br /> or click to select from your device
+            CSVまたはExcelファイルをここにドロップ <br /> またはデバイスから選択してください
           </Typography>
         </Box>
 
@@ -171,7 +171,7 @@ function CsvUpload() {
             "&:hover": { backgroundColor: "#00695c" },
           }}
         >
-          {isLoading ? "Uploading..." : `Upload ${files.length > 1 ? "Files" : "File"}`}
+          {isLoading ? "アップロード中..." : `アップロード ${files.length > 1 ? "ファイル" : "ファイル"}`}
         </Button>
 
         <Box textAlign="center" mt={2}>
@@ -181,7 +181,7 @@ function CsvUpload() {
             color="primary"
             onClick={() => setHelpOpen(true)}
           >
-            Need help?
+            ヘルプが必要ですか？
           </Link>
         </Box>
 

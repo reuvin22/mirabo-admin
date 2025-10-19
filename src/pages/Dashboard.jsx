@@ -58,9 +58,8 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-white p-5 md:p-10">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">ダッシュボード</h1>
 
-      {/* Date Range Picker */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <input
           type="date"

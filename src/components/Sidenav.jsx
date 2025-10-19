@@ -56,7 +56,7 @@ function Sidenav() {
               }}
             >
               <Home size={20} />
-              <span>Dashboard</span>
+              <span>ダッシュボード</span>
             </button>
 
             <button
@@ -67,7 +67,7 @@ function Sidenav() {
               }}
             >
               <User size={20} />
-              <span>Profile</span>
+              <span>プロフィール</span>
             </button>
 
             <button
@@ -78,7 +78,7 @@ function Sidenav() {
               }}
             >
               <Users size={20} />
-              <span>User Management</span>
+              <span>ユーザー管理</span>
             </button>
 
             <button
@@ -89,7 +89,7 @@ function Sidenav() {
               }}
             >
               <BarChart3 size={20} />
-              <span>Total Info</span>
+              <span>統計情報</span>
             </button>
 
             <button
@@ -100,7 +100,7 @@ function Sidenav() {
               }}
             >
               <FileUp size={20} />
-              <span>CSV Upload</span>
+              <span>CSVアップロード</span>
             </button>
           </nav>
         </div>
@@ -111,7 +111,7 @@ function Sidenav() {
             onClick={handleLogout}
           >
             <LogOut size={20} />
-            <span>Logout</span>
+            <span>ログアウト</span>
           </button>
         </div>
       </div>

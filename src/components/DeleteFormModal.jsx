@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-function DeleteFormModal({ open, onClose, onConfirm, itemName = "this item", loading = false }) {
+function DeleteFormModal({ open, onClose, onConfirm, itemName = "このアイテム", loading = false }) {
   return (
     <Dialog
       open={open}
@@ -19,15 +19,15 @@ function DeleteFormModal({ open, onClose, onConfirm, itemName = "this item", loa
       maxWidth="xs"
       PaperProps={{ sx: { textAlign: "center" } }}
     >
-      <DialogTitle>Confirm Delete</DialogTitle>
+      <DialogTitle>削除の確認</DialogTitle>
       <DialogContent>
         <Typography>
-          Are you sure you want to delete {itemName}?
+          本当に {itemName} を削除してもよろしいですか？
         </Typography>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
         <Button variant="outlined" onClick={onClose} disabled={loading}>
-          Cancel
+          キャンセル
         </Button>
 
         <Button
@@ -37,7 +37,7 @@ function DeleteFormModal({ open, onClose, onConfirm, itemName = "this item", loa
           disabled={loading}
           sx={{ ml: 1, minWidth: 90 }}
         >
-          {loading ? <CircularProgress size={20} /> : "Delete"}
+          {loading ? <CircularProgress size={20} /> : "削除"}
         </Button>
       </DialogActions>
     </Dialog>

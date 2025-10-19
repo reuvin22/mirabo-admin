@@ -15,16 +15,16 @@ function ForgotPassword() {
     e.preventDefault();
 
     if (!email) {
-      toast.error("Please enter your email.");
+      toast.error("メールアドレスを入力してください。");
       return;
     }
 
     try {
       await forgotPassword(email).unwrap();
-      toast.success("Password reset link sent!");
+      toast.success("パスワードリセットリンクを送信しました！");
       setEmail("");
     } catch (err) {
-      toast.error(err?.data?.message || "Something went wrong.");
+      toast.error(err?.data?.message || "エラーが発生しました。");
     }
   };
 
@@ -47,7 +47,6 @@ function ForgotPassword() {
           position: "relative",
         }}
       >
-        {/* Back Icon */}
         <IconButton
           onClick={() => navigate("/")}
           sx={{ position: "absolute", top: 8, left: 8 }}
@@ -56,11 +55,11 @@ function ForgotPassword() {
         </IconButton>
 
         <Typography variant="h5" textAlign="center" sx={{ mt: 3 }}>
-          Forgot Password
+          パスワードを忘れた場合
         </Typography>
 
         <Typography variant="body2" textAlign="center">
-          Enter your email to receive a password reset link.
+          パスワードリセットリンクを受け取るためにメールアドレスを入力してください。
         </Typography>
 
         <form
@@ -68,7 +67,7 @@ function ForgotPassword() {
           style={{ display: "flex", flexDirection: "column", gap: "16px" }}
         >
           <TextField
-            label="Email"
+            label="メールアドレス"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -85,12 +84,12 @@ function ForgotPassword() {
               "&:hover": { bgcolor: "grey.700" },
             }}
           >
-            {isLoading ? "Sending..." : "Send Reset Link"}
+            {isLoading ? "送信中..." : "リセットリンクを送信"}
           </Button>
         </form>
       </Paper>
 
-      <ToastContainer position="top-center" />
+      <ToastContainer position="top-right" />
     </Box>
   );
 }

@@ -5,16 +5,16 @@ import SampleFileImage from "../assets/Sample-Format.png";
 const NeedHelp = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Need Help?</DialogTitle>
+      <DialogTitle>ヘルプが必要ですか？</DialogTitle>
       <DialogContent dividers>
         <Typography variant="body1" color="text.secondary" mb={2}>
-          Here is a sample format of the document you need to upload. Make sure your Excel/CSV file follows the same column headings and structure.
+          ここにアップロードする必要があるドキュメントのサンプル形式があります。ExcelまたはCSVファイルが同じ列見出しと構造に従っていることを確認してください。
         </Typography>
 
         <Box
           component="img"
           src={SampleFileImage}
-          alt="Sample file format"
+          alt="サンプルファイル形式"
           sx={{
             maxWidth: "100%",
             height: "auto",
@@ -25,11 +25,11 @@ const NeedHelp = ({ open, onClose }) => {
         />
 
         <Typography variant="body2" color="text.secondary" mt={2}>
-          Columns must include: <strong>question_number, questions, writing_advice, prompt</strong>
+          列には次が含まれている必要があります: <strong>question_number, questions, writing_advice, prompt</strong>
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} variant="contained">Close</Button>
+        <Button onClick={onClose} variant="contained">閉じる</Button>
       </DialogActions>
     </Dialog>
   );

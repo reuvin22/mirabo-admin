@@ -109,11 +109,11 @@ function Users() {
       <Paper sx={{ p: 3 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6" fontWeight="bold">
-            Personal Information
+            個人情報
           </Typography>
           {!isEditing ? (
             <Button variant="contained" size="small" onClick={() => setIsEditing(true)}>
-              Edit
+              編集
             </Button>
           ) : (
             <Button
@@ -123,7 +123,7 @@ function Users() {
               onClick={handleSave}
               disabled={isUpdating}
             >
-              Save
+              保存
             </Button>
           )}
         </Box>
@@ -132,7 +132,7 @@ function Users() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
-            <Typography>First Name</Typography>
+            <Typography>名</Typography>
             {isEditing ? (
               <TextField
                 size="small"
@@ -146,7 +146,7 @@ function Users() {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Typography>Last Name</Typography>
+            <Typography>姓</Typography>
             {isEditing ? (
               <TextField
                 size="small"
@@ -160,7 +160,7 @@ function Users() {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Typography>Email</Typography>
+            <Typography>メールアドレス</Typography>
             {isEditing ? (
               <TextField
                 size="small"
@@ -176,7 +176,7 @@ function Users() {
           {isEditing && (
             <>
               <Grid item xs={12} sm={6}>
-                <Typography>Password</Typography>
+                <Typography>パスワード</Typography>
                 <TextField
                   size="small"
                   fullWidth
@@ -187,7 +187,7 @@ function Users() {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <Typography>Confirm Password</Typography>
+                <Typography>パスワード確認</Typography>
                 <TextField
                   size="small"
                   fullWidth

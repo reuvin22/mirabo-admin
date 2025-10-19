@@ -14,30 +14,30 @@ const UserManagementModal = ({ open, onClose, user }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>User Details</DialogTitle>
+      <DialogTitle>ユーザー詳細</DialogTitle>
 
       <DialogContent dividers>
         <Box display="flex" flexDirection="column" gap={2}>
           <TextField
-            label="User ID"
+            label="ユーザーID"
             value={user.id}
             InputProps={{ readOnly: true }}
             fullWidth
           />
           <TextField
-            label="Name"
+            label="名前"
             value={`${user.first_name} ${user.last_name}`}
             InputProps={{ readOnly: true }}
             fullWidth
           />
           <TextField
-            label="Email"
+            label="メール"
             value={user.email}
             InputProps={{ readOnly: true }}
             fullWidth
           />
           <TextField
-            label="Role"
+            label="役割"
             value={user.role}
             InputProps={{ readOnly: true }}
             fullWidth
@@ -47,7 +47,7 @@ const UserManagementModal = ({ open, onClose, user }) => {
 
       <DialogActions>
         <Button onClick={onClose} variant="contained">
-          Close
+          閉じる
         </Button>
       </DialogActions>
     </Dialog>

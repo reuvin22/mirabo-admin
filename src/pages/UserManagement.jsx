@@ -12,17 +12,22 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
-  Box,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import UserFormModal from "../components/UserFormModal";
-import { useCreateUserManagementMutation, useDeleteUserManagementMutation, useUpdateUserManagementMutation, useUserManagementQuery } from "../services/userManagementService";
+import {
+  useCreateUserManagementMutation,
+  useDeleteUserManagementMutation,
+  useUpdateUserManagementMutation,
+  useUserManagementQuery,
+} from "../services/userManagementService";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserManagementModal from "../components/UserManagementModal";
 import DeleteFormModal from "../components/DeleteFormModal";
 import { toast } from "react-toastify";
 import { EditIcon } from "lucide-react";
+
 function UserManagement() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -59,7 +64,7 @@ function UserManagement() {
     setPage(0);
   }, [debouncedSearch]);
 
-    const handleView = (user) => {
+  const handleView = (user) => {
     setSelectedUser(user);
     setOpenViewModal(true);
   };
@@ -80,9 +85,9 @@ function UserManagement() {
     setDeleteLoading(true);
     try {
       await deleteUser(selectedUser.id).unwrap();
-      toast.success("User deleted successfully");
+      toast.success("ユーザーが正常に削除されました");
     } catch (error) {
-      toast.error("Failed to delete user");
+      toast.error("ユーザーの削除に失敗しました");
     } finally {
       setDeleteLoading(false);
       setOpenDeleteModal(false);
@@ -97,34 +102,34 @@ function UserManagement() {
     try {
       if (isEditing) {
         await updateUser({ id: selectedUser.id, body: formData }).unwrap();
-        toast.success("User updated successfully");
+        toast.success("ユーザーが正常に更新されました");
       } else {
         await createUser(formData).unwrap();
-        toast.success("User created successfully");
+        toast.success("ユーザーが正常に作成されました");
       }
       setOpenForm(false);
       setIsEditing(false);
       setSelectedUser(null);
     } catch (error) {
-      toast.error(isEditing ? "Failed to update user" : "Failed to create user");
+      toast.error(isEditing ? "ユーザーの更新に失敗しました" : "ユーザーの作成に失敗しました");
     }
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 p-4 md:p-8">
-      <h1 className="text-2xl font-semibold mb-4">User Management</h1>
+      <h1 className="text-2xl font-semibold mb-4">ユーザー管理</h1>
 
       <div className="mb-4 flex items-center justify-between">
         <TextField
           size="small"
-          label="Search Users"
+          label="ユーザー検索"
           variant="outlined"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           sx={{ flex: 1, marginRight: 2 }}
         />
 
-        <Tooltip title="Create User">
+        <Tooltip title="ユーザー作成">
           <IconButton
             color="default"
             onClick={handleCreateUser}
@@ -147,10 +152,10 @@ function UserManagement() {
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell align="center"><b>Name</b></TableCell>
-                <TableCell align="center"><b>Email</b></TableCell>
-                <TableCell align="center"><b>Role</b></TableCell>
-                <TableCell align="center"><b>Actions</b></TableCell>
+                <TableCell align="center"><b>氏名</b></TableCell>
+                <TableCell align="center"><b>メールアドレス</b></TableCell>
+                <TableCell align="center"><b>役割</b></TableCell>
+                <TableCell align="center"><b>操作</b></TableCell>
               </TableRow>
             </TableHead>
 
@@ -169,19 +174,19 @@ function UserManagement() {
                   <TableCell align="center">{user.email}</TableCell>
                   <TableCell align="center">{user.role}</TableCell>
                   <TableCell align="center">
-                    <Tooltip title="View">
+                    <Tooltip title="表示">
                       <IconButton size="small" color="primary" onClick={() => handleView(user)}>
                         <VisibilityIcon />
                       </IconButton>
                     </Tooltip>
 
-                    <Tooltip title="Edit">
+                    <Tooltip title="編集">
                       <IconButton size="small" color="secondary" onClick={() => handleEdit(user)}>
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
 
-                    <Tooltip title="Delete">
+                    <Tooltip title="削除">
                       <IconButton size="small" color="error" onClick={() => handleDelete(user)}>
                         <DeleteIcon />
                       </IconButton>
@@ -192,7 +197,7 @@ function UserManagement() {
 
               {!isLoading && (!data?.data || data.data.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">No results found</TableCell>
+                  <TableCell colSpan={4} align="center">結果が見つかりません</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -230,6 +235,7 @@ function UserManagement() {
         onClose={handleCloseView}
         user={selectedUser}
       />
+
       <DeleteFormModal
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}

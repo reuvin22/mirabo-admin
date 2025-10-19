@@ -33,13 +33,13 @@ const UserResponseModal = ({ open, onClose, user }) => {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
-      alert("Failed to export answers");
+      alert("回答のエクスポートに失敗しました");
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>User ID: {user.userId}</DialogTitle>
+      <DialogTitle>ユーザーID: {user.userId}</DialogTitle>
 
       <DialogContent dividers>
         {questions.length > 0 ? (
@@ -47,7 +47,7 @@ const UserResponseModal = ({ open, onClose, user }) => {
             {questions.map(([key, value], index) => (
               <TextField
                 key={index}
-                label={key.replace("Question_", "Question ")}
+                label={key.replace("Question_", "質問 ")}
                 value={value || ""}
                 InputProps={{ readOnly: true }}
                 fullWidth
@@ -55,7 +55,7 @@ const UserResponseModal = ({ open, onClose, user }) => {
             ))}
           </Box>
         ) : (
-          <Typography align="center">No responses found.</Typography>
+          <Typography align="center">回答は見つかりませんでした。</Typography>
         )}
       </DialogContent>
 
@@ -66,10 +66,10 @@ const UserResponseModal = ({ open, onClose, user }) => {
           color="primary"
           disabled={isLoading}
         >
-          {isLoading ? "Exporting..." : "Export"}
+          {isLoading ? "エクスポート中..." : "エクスポート"}
         </Button>
         <Button onClick={onClose} variant="contained">
-          Close
+          閉じる
         </Button>
       </DialogActions>
     </Dialog>
