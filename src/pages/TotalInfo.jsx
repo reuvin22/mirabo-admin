@@ -94,8 +94,13 @@ function TotalInfo() {
                 </TableRow>
               )}
 
-              {!isLoading && Array.isArray(userResponse?.data) &&
-                userResponse.data.map((user) => (
+              {!isLoading && Array.isArray(userResponse?.data) && (() => {
+                const seen = new Set();
+                return userResponse.data.filter(user => {
+                  if (seen.has(user.userId)) return false;
+                  seen.add(user.userId);
+                  return true;
+                }).map(user => (
                   <TableRow key={user.id} hover>
                     <TableCell align="center">{user.userId}</TableCell>
                     <TableCell align="center">
@@ -113,7 +118,8 @@ function TotalInfo() {
                       </Box>
                     </TableCell>
                   </TableRow>
-                ))}
+                ));
+              })()}
 
               {!isLoading && Array.isArray(userResponse?.data) && userResponse.data.length === 0 && (
                 <TableRow>
