@@ -10,7 +10,7 @@ const UserManagementModal = ({ open, onClose, user }) => {
       <DialogContent dividers>
         <Box display="flex" flexDirection="column" gap={2}>
           <TextField label="ユーザーID" value={user.id || ""} InputProps={{ readOnly: true }} fullWidth />
-          <TextField label="名前" value={`${user.first_name || ""} ${user.last_name || ""}`} InputProps={{ readOnly: true }} fullWidth />
+          <TextField label="名前" value={`${user.first_name || ""} ${user.middle_name || ""} ${user.last_name || ""}`} InputProps={{ readOnly: true }} fullWidth />
           <TextField label="メール" value={user.email || ""} InputProps={{ readOnly: true }} fullWidth />
           <TextField label="役割" value={user.role || ""} InputProps={{ readOnly: true }} fullWidth />
         </Box>
