@@ -65,30 +65,37 @@ const Login = () => {
           width: { xs: "100%", md: 800 },
         }}
       >
-        {/* Left Panel */}
+      <Box
+        sx={{
+          flex: 1,
+          bgcolor: "grey.700",
+          color: "white",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 4,
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          ようこそ
+        </Typography>
+        <Typography sx={{ mb: 2, opacity: 0.85 }}>
+          じぶんLABO by Mirabo 管理ダッシュボードへ！
+        </Typography>
         <Box
+          component="img"
+          src={LoginPhoto}
+          alt="AI"
           sx={{
-            flex: 1,
-            bgcolor: "grey.700",
-            color: "white",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 4,
-            textAlign: "center",
+            width: "80%",
+            maxWidth: 250,
+            display: { xs: "none", md: "block" },
           }}
-        >
-          <Typography variant="h5" gutterBottom>
-            ようこそ
-          </Typography>
-          <Typography sx={{ mb: 2, opacity: 0.85 }}>
-            Mirabo質問部屋AI管理ダッシュボードへ！ここにAIに関する記録が保存されます。
-          </Typography>
-          <img src={LoginPhoto} alt="AI" style={{ width: "80%", maxWidth: 250 }} />
-        </Box>
+        />
+      </Box>
 
-        {/* Right Panel */}
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", p: 4 }}>
           <Typography variant="h5" sx={{ mb: 4, textAlign: "center" }}>
             サインイン
