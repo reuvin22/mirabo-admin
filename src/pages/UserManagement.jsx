@@ -180,7 +180,7 @@ function UserManagement() {
               {!isLoading && data?.data?.length > 0
                 ? data.data.map((user) => (
                     <TableRow key={user.id} hover>
-                      <TableCell align="center">{user.first_name || ""} {user.last_name || ""}</TableCell>
+                      <TableCell align="center">{user.first_name || ""} {user.middle_name || ""} {user.last_name || ""}</TableCell>
                       <TableCell align="center">{user.email || ""}</TableCell>
                       <TableCell align="center">{user.role || ""}</TableCell>
                       <TableCell align="center">

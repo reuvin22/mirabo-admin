@@ -49,7 +49,7 @@ function Users() {
   const handleSave = async () => {
     if (userData.password || userData.confirmPassword) {
       if (userData.password !== userData.confirmPassword) {
-        toast.error("Passwords do not match!");
+        toast.error("パスワードが一致しません！");
         return;
       }
     }
@@ -71,12 +71,12 @@ function Users() {
         body,
       }).unwrap();
 
-      toast.success("Profile updated successfully!");
+      toast.success("プロフィールが正常に更新されました！");
       setIsEditing(false);
       setUserData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update profile.");
+      toast.error("プロフィールの更新に失敗しました。");
     }
   };
 
@@ -149,19 +149,18 @@ function Users() {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Typography>姓</Typography>
+            <Typography>ミドルネーム</Typography>
             {isEditing ? (
               <TextField
                 size="small"
                 fullWidth
-                value={userData.middle_name}
+                value={userData.middle_name || ""}  // avoid null
                 onChange={(e) => handleChange("middle_name", e.target.value)}
               />
             ) : (
-              <Typography fontWeight={500}>{userData.middle_name}</Typography>
+              <Typography fontWeight={500}>{userData.middle_name || ""}</Typography>
             )}
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <Typography>姓</Typography>
             {isEditing ? (
